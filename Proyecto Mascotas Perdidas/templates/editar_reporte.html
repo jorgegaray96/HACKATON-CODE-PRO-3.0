@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <title>Editar Reporte</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+
+    <h1 class="text-3xl font-bold mb-6">Editar Reporte</h1>
+
+    <form method="POST" class="max-w-lg bg-white p-6 rounded shadow" enctype="multipart/form-data">
+        <label class="block mb-2 font-semibold" for="nombre">Nombre de la mascota</label>
+        <input id="nombre" name="nombre" type="text" value="{{ reporte.nombre_animal }}" required
+               class="w-full border px-3 py-2 rounded mb-4" />
+
+        <label class="block mb-2 font-semibold" for="descripcion">Descripción</label>
+        <textarea id="descripcion" name="descripcion" rows="4" class="w-full border px-3 py-2 rounded mb-4">{{ reporte.descripcion_animal }}</textarea>
+
+        <label class="block mb-2 font-semibold" for="ubicacion">Ubicación</label>
+        <input id="ubicacion" name="ubicacion" type="text" value="{{ reporte.ubicacion_animal }}"
+               class="w-full border px-3 py-2 rounded mb-4" />
+
+        <label class="block mb-2 font-semibold" for="contacto">Contacto</label>
+        <input id="contacto" name="contacto" type="text" value="{{ reporte.contacto_animal }}"
+               class="w-full border px-3 py-2 rounded mb-4" />
+
+        <!-- Aquí podrías agregar opción para cambiar foto si quieres -->
+
+        <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Guardar Cambios</button>
+    </form>
+
+</body>
+</html>
