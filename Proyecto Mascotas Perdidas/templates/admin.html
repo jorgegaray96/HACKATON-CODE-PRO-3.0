@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrar reportes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CDN de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+    <!-- Encabezado/Navegación -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                
+                <body class="bg-gray-100">
+
+   
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Find My Pet</span>
+                </div>
+
+                <!-- Navegación de Escritorio -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Inicio</a>
+                    <a href="{{ url_for('panel_admin') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Administrar reportes</a>
+                    <a href="#Mision/Vision" class="text-gray-700 hover:text-primary transition-colors duration-300">Sobre nosotros</a>
+                    {% if session.get('usuario') %}
+                        <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                        <a href="{{ url_for('logout') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Iniciar sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- Menú Móvil -->
+                <div class="md:hidden">
+                    <details class="relative">
+                        <summary class="text-gray-700 hover:text-primary cursor-pointer">
+                            <i class="fas fa-bars text-xl"></i>
+                        </summary>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                            <a href="{{ url_for('index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Inicio</a>
+                            <a href="{{ url_for('panel_admin') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Administrar reportes</a>
+                            <a href="#Mision/Vision" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sobre nosotros</a>
+                            {% if session.get('usuario') %}
+                                <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Iniciar sesión</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="bg-gray-100 min-h-screen p-6">
+        <h1 class="text-3xl font-bold mb-6 text-center">Reportes pendientes de aprobación</h1>
+
+        {% if mascotas %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+            {% for m in mascotas %}
+                <div class="bg-white rounded shadow p-4 flex flex-col">
+                    <h2 class="font-bold text-xl mb-2">{{ m.nombre_animal }}</h2>
+                    <p class="mb-2">{{ m.descripcion_animal }}</p>
+                    <p class="mb-2"><strong>Ubicación:</strong> {{ m.ubicacion_animal }}</p>
+                    <p class="mb-2"><strong>Contacto:</strong> {{ m.contacto_animal }}</p>
+                    {% if m.foto_animal %}
+                        <img src="{{ url_for('static', filename='uploads/' + m.foto_animal) }}" alt="Foto de {{ m.nombre_animal }}"
+                            class="w-full h-48 object-cover rounded mb-4">
+                    {% endif %}
+                    <div class="flex space-x-4">
+                        <form action="{{ url_for('aprobar_reporte', id=m.id) }}" method="post" class="flex-1">
+                            <button type="submit" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">
+                                Aprobar
+                            </button>
+                        </form>
+                        <form action="{{ url_for('rechazar_reporte', id=m.id) }}" method="post" class="flex-1">
+                            <button type="submit" class="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition">
+                                Rechazar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-center text-gray-600">No hay reportes pendientes.</p>
+        {% endif %}
+    </section>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis reportes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CDN de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+    <!-- Encabezado/Navegación -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                
+                <body class="bg-gray-100">
+
+   
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Find My Pet</span>
+                </div>
+
+                <!-- Navegación de Escritorio -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Inicio</a>
+                    <a href="#Mision/Vision" class="text-gray-700 hover:text-primary transition-colors duration-300">Sobre nosotros</a>
+                    {% if session.get('usuario') %}
+                        <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                        <a href="{{ url_for('logout') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Iniciar sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- Menú Móvil -->
+                <div class="md:hidden">
+                    <details class="relative">
+                        <summary class="text-gray-700 hover:text-primary cursor-pointer">
+                            <i class="fas fa-bars text-xl"></i>
+                        </summary>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                            <a href="{{ url_for('index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Inicio</a>
+                            <a href="#Mision/Vision" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sobre nosotros</a>
+                            {% if session.get('usuario') %}
+                                <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Iniciar sesión</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+    <div class="bg-gray-100 p-6">
+        <h1 class="text-3xl font-bold mb-6">Mis Reportes</h1>
+
+        {% if reportes %}
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for r in reportes %}
+                    <div class="bg-white rounded shadow p-4">
+                        {% if r.foto_animal %}
+                            <img src="{{ url_for('static', filename='uploads/' + r.foto_animal) }}" alt="Foto {{ r.nombre_animal }}" class="w-full h-48 object-cover rounded mb-3">
+                        {% endif %}
+                        <h2 class="font-semibold text-xl mb-2">{{ r.nombre_animal }}</h2>
+                        <p><strong>Descripción:</strong> {{ r.descripcion_animal }}</p>
+                        <p><strong>Ubicación:</strong> {{ r.ubicacion_animal }}</p>
+                        <p><strong>Contacto:</strong> {{ r.contacto_animal }}</p>
+
+                        <div class="mt-4 flex gap-2">
+                            <a href="{{ url_for('editar_reporte', id=r.id) }}" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Editar</a>
+
+                            <form action="{{ url_for('marcar_encontrado', id=r.id) }}" method="POST" onsubmit="return confirm('¿Está seguro de que encontró al animal?');">
+                                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700">Marcar como Encontrado</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No tienes reportes activos.</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>
