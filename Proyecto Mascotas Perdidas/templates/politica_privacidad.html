@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Politica de privacidad</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- CDN de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-white font-sans">
+  <!-- Encabezado/Navegación -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                
+                <body class="bg-gray-100">
+
+   
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                        <i class="fas fa-file-alt text-white text-sm"></i>
+                    </div>
+                    <span class="text-xl font-bold text-gray-800">Find My Pet</span>
+                </div>
+
+                <!-- Navegación de Escritorio -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Inicio</a>
+                    <a href="{{ url_for('sobre_nosotros') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Sobre nosotros</a>
+                    {% if session.get('usuario') %}
+                        <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                        <a href="{{ url_for('logout') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Cerrar sesión</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Iniciar sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- Menú Móvil -->
+                <div class="md:hidden">
+                    <details class="relative">
+                        <summary class="text-gray-700 hover:text-primary cursor-pointer">
+                            <i class="fas fa-bars text-xl"></i>
+                        </summary>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                            <a href="{{ url_for('index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Inicio</a>
+                            <a href="#Mostrar_Reportes" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Reportes</a>
+                            {% if session.get('usuario') and not session.get('admin') %}
+                              <a href="{{ url_for('mis_reportes') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Mis reportes</a>
+                            {% endif %}
+                            <a href="{{ url_for('sobre_nosotros') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sobre nosotros</a>
+                            {% if session.get('usuario') %}
+                                <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                            {% else %}
+                                <a href="{{ url_for('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Iniciar sesión</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+
+  <main class="w-full max-w-5xl mx-auto px-6 py-12">
+    <article class="bg-blue-100 p-8 rounded-2xl shadow-md">
+      <h2 class="text-2xl font-bold text-blue-500 mb-6 text-justify">Política de Privacidad</h2>
+
+      <div class="text-gray-700 text-justify space-y-6">
+        <section>
+          <h3 class="text-lg font-bold">1. Identificación del Responsable</h3>
+          <p>
+            El responsable del tratamiento de los datos publicados en esta página web es el equipo desarrollador de <strong>Find My Pet</strong>, un proyecto sin fines de lucro creado con el objetivo de ayudar a la comunidad a reportar y encontrar mascotas perdidas.
+          </p>
+          <p>
+            Para consultas, podés contactarnos al correo electrónico: 
+            <strong class="text-blue-500">findmypet_py@gmail.com</strong>
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">2. Datos Recopilados</h3>
+          <p>
+            A través de los formularios disponibles en la web, se recopilan únicamente datos relacionados con la mascota reportada, que pueden incluir:
+          </p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Nombre de la mascota</li>
+            <li>Descripción física o particularidades</li>
+            <li>Ubicación (lugar de pérdida o hallazgo)</li>
+            <li>Fotografía(s)</li>
+            <li>Datos de contacto de quien reporta (opcional y visibles solo con fines de contacto)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">3. Finalidad del Tratamiento</h3>
+          <p>Los datos se recopilan únicamente para los siguientes fines:</p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Publicar casos de mascotas pérdidas o encontradas en la página web</li>
+            <li>Permitir que otras personas puedan colaborar o contactar en caso de reconocimiento</li>
+            <li>Mejorar la difusión de los casos a través de redes sociales</li>
+            <li>No usamos estos datos para fines comerciales, ni los compartimos con terceros.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">4. Consentimiento</h3>
+          <p>
+            El envío del formulario implica el consentimiento informado y voluntario para que los datos proporcionados sean utilizados conforme a esta política.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">5. Derechos de los Usuarios</h3>
+          <p>Las personas que completan un formulario pueden:</p>
+          <ul class="list-disc list-inside ml-4">
+            <li>Acceder a los datos que han enviado</li>
+            <li>Solicitar la corrección o modificación de la información</li>
+            <li>Pedir la eliminación de la publicación y sus datos asociados</li>
+          </ul>
+          <p>
+            Si tiene dudas sobre estos derechos, pueden escribirnos a: 
+            <strong class="text-blue-500">findmypet_py@gmail.com</strong>
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">6. Seguridad de los Datos</h3>
+          <p>
+            El administrador del sitio es el encargado de que la información esté segura y que nadie sin permiso pueda verla o utilizarla para otros fines. 
+            Aunque no hay sistema 100% seguro, hacemos todo lo posible para proteger los datos.
+          </p>
+        </section>
+
+        <section>
+          <h3 class="text-lg font-bold">7. Plazo de Conservación</h3>
+          <p>
+            Los datos se conservarán únicamente mientras la publicación esté activa. Una vez que la mascota sea encontrada o se solicite la baja, los datos serán eliminados.
+          </p>
+        </section>
+      </div>
+    </article>
+  </main>
+
+  <!-- Pie de Página -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Información de la Empresa -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-paw text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold">Find My Pet</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">
+                        Reuniendo mascotas con sus familias desde 2025. Nuestra misión es ayudar a que ninguna mascota permanezca perdida.
+                    </p>
+                    <!-- <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div> -->
+                </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Navegación</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url_for('index') }}" class="hover:text-white transition-colors">Inicio</a></li>
+                        <li><a href="{{ url_for('mostrar_reporte') }}" class="hover:text-white transition-colors">Formulario de reportes</a></li>
+                        <li><a href="{{ url_for('sobre_nosotros') }}" class="hover:text-white transition-colors">Sobre nosotros</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Soporte -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Ayuda y Soporte</h4>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="{{ url_for('preguntas_frecuentes') }}" class="hover:text-white transition-colors">Preguntas Frecuentes</a></li>
+                        <li><a href="mailto:ayuda@findmypet.cl" class="hover:text-white transition-colors">findmypet_py@gmail.com</a></li>
+                        <li><a href="{{ url_for('terminos_de_uso') }}" class="hover:text-white transition-colors">Términos de Uso</a></li>
+                        <li><a href="{{ url_for('politica_privacidad') }}" class="hover:text-white transition-colors">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2025 Find My Pet. Todos los derechos reservados. Hecho con ❤️ para reunir mascotas con sus familias.</p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

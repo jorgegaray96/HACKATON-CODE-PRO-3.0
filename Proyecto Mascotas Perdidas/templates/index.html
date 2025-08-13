@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mascotas Perdidas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        accent: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+  <!-- Encabezado/Navegación -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex justify-between items-center">
+              <div class="flex items-center">
+                <img src="{{ url_for('static', filename='uploads/logo_azul.png') }}" alt="logo" class="w-36 sm:w-48 h-16 sm:h-20 object-contain">
+              </div>
+
+                <!-- Navegación de Escritorio -->
+                <div class="hidden md:flex space-x-6 lg:space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Inicio</a>
+                    <a href="#Mostrar_Reportes" class="text-gray-700 hover:text-primary transition-colors duration-300">Reportes</a>
+                    {% if session.get('usuario') and not session.get('admin') %}
+                      <a href="{{ url_for('mis_reportes') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Mis reportes</a>
+                    {% endif %}
+                    {% if session.get('admin') %}
+                      <a href="{{ url_for('panel_admin') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Administrar reportes</a>
+                    {% endif %}
+                    <a href="{{ url_for('sobre_nosotros') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Sobre nosotros</a>
+                    {% if not session.get('usuario') %}
+                        <a href="{{ url_for('login') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Iniciar sesión</a>
+                        <a href="{{ url_for('registro') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Registrarse</a>
+                    {% else %}
+                        <li class="font-semibold">Hola, {{ session['usuario'] }}</li>
+                        <a href="{{ url_for('logout') }}" class="text-gray-700 hover:text-primary transition-colors duration-300">Cerrar sesión</a>
+                    {% endif %}
+                </div>
+
+                <!-- Menú Móvil -->
+                <div class="md:hidden">
+                    <details class="relative">
+                        <summary class="text-gray-700 hover:text-primary cursor-pointer">
+                            <i class="fas fa-bars text-xl"></i>
+                        </summary>
+                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                            <a href="{{ url_for('index') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Inicio</a>
+                            <a href="#Mostrar_Reportes" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Reportes</a>
+                            {% if session.get('usuario') and not session.get('admin') %}
+                              <a href="{{ url_for('mis_reportes') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Mis reportes</a>
+                            {% endif %}
+                            {% if session.get('admin') %}
+                              <a href="{{ url_for('panel_admin') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Administrar reportes</a>
+                            {% endif %}
+                            <a href="{{ url_for('sobre_nosotros') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Sobre nosotros</a>
+                            {% if not session.get('usuario') %}
+                                <a href="{{ url_for('login') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Iniciar sesión</a>
+                                <a href="{{ url_for('registro') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Registrarse</a>
+                            {% else %}
+                                <li class="font-semibold px-4 py-2">{{ session['usuario'] }}</li>
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Cerrar sesión</a>
+                            {% endif %}
+                        </div>
+                    </details>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Sección de inicio -->
+    <section id="inicio" class="bg-gradient-to-br from-primary to-blue-600 text-white py-20">
+        <div class="container mx-auto px-4 sm:px-6 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-6">
+                <i class="fas fa-paw mr-4"></i>Find My Pet
+            </h1>
+            <p class="text-lg sm:text-xl md:text-2xl mb-8 opacity-90 max-w-3xl mx-auto">
+                Plataforma dedicada para reportar mascotas perdidas y encontrar a tu compañero perdido
+            </p>
+        </div>
+    </section>
+
+    <!-- Listado de reportes -->
+    <section id="Mostrar_Reportes" class="max-w-6xl mx-auto mt-6 px-4 sm:px-6 lg:px-8 bg-white rounded shadow scroll-mt-20">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+          Reportes de mascotas perdidas
+        </h2>
+        <p>
+          <a href="{{ url_for('mostrar_reporte') }}" 
+             class="inline-block border border-blue-500 text-blue-700 px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors duration-300">
+            Crear nuevo reporte
+          </a>
+        </p>
+      </div>
+      
+      {% if mascotas %}
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+          {% for mascota in mascotas %}
+            <div class="border rounded p-4 bg-gray-50 shadow hover:shadow-lg transition">
+              {% if mascota.foto_animal %}
+                <img src="{{ url_for('static', filename='uploads/' + mascota.foto_animal) }}" 
+                     alt="Foto de {{ mascota.nombre_animal }}" 
+                     class="w-full h-40 sm:h-48 md:h-56 object-cover rounded mb-3 cursor-pointer"
+                     onclick="abrirModal(this)">
+              {% endif %}
+              <p class="text-xl font-bold mb-2">{{ mascota.nombre_animal }}</p>
+              <p class="text-gray-700">{{ mascota.descripcion_animal }}</p>
+              <p class="text-sm text-gray-500 mt-2">📍 {{ mascota.ubicacion_animal }}</p>
+              <p class="text-sm text-gray-500 mt-2">📞 {{ mascota.contacto_animal }}</p>
+            </div>
+          {% endfor %}
+      </div>
+      {% else %}
+        <p class="text-center text-gray-500">No hay reportes aún.</p>
+      {% endif %}
+    </section>
+
+    <!-- Modal global -->
+    <div id="modalImagen" class="fixed inset-0 bg-black bg-opacity-80 hidden items-center justify-center z-50">
+      <span class="absolute top-5 right-5 text-white text-3xl cursor-pointer" onclick="cerrarModal()">&times;</span>
+      <img id="imgModal" class="max-h-[90%] max-w-[90%] rounded shadow-lg">
+      <p id="captionModal" class="text-white text-center mt-2"></p>
+    </div>
+
+    <script>
+    function abrirModal(img) {
+      const modal = document.getElementById('modalImagen');
+      const modalImg = document.getElementById('imgModal');
+      const caption = document.getElementById('captionModal');
+
+      modal.style.display = 'flex';
+      modalImg.src = img.src;
+      caption.textContent = img.alt;
+    }
+
+    document.getElementById('modalImagen').addEventListener('click', function(e) {
+      if(e.target.id === 'modalImagen') cerrarModal();
+    });
+
+    document.addEventListener('keydown', function(e) {
+      if(e.key === 'Escape') cerrarModal();
+    });
+
+    function cerrarModal() {
+      document.getElementById('modalImagen').style.display = 'none';
+    }
+    </script>
+
+    <!-- Sección de Enlaces Útiles -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
+                    Enlaces Útiles
+                </h2>
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Recursos para el cuidado, rescate y bienestar animal
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Enlace 1 -->
+                <a href="https://www.bienestaranimal.gov.py/" target="_blank" 
+                  class="block bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition">
+                  <img src="https://tse3.mm.bing.net/th/id/OIP.zqZFfDupqSWj1rCKSzvyTAHaFj?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="Foto ejemplo">
+                    <h3 class="text-lg font-bold text-primary mb-2">
+                        Dirección Nacional de Defensa, Salud y Bienestar Animal
+                    </h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Sitio oficial del gobierno sobre protección y bienestar animal. La Dirección Nacional de Defensa, Salud y Bienestar Animal, tiene a su cargo las políticas de protección de bienestar animal y de control y erradicación de la violencia hacia los mismos.
+                    </p>
+                </a>
+
+                <!-- Enlace 2 -->
+                <a href="https://esp.veterinby.com/veterinario-emergencia-paraguay/asuncion-i1/" target="_blank"
+                  class="block bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition">
+                  <img src="https://tse2.mm.bing.net/th/id/OIP.g-mgPZ8UbIhA2dbDz-mTogHaE0?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Foto ejemplo">
+                    <h3 class="text-lg font-bold text-primary mb-2">
+                        Veterinario de Emergencia en Asunción
+                    </h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Encuentra veterinarios de urgencias disponibles en la ciudad de Asunción.
+                    </p>
+                </a>
+
+                <!-- Enlace 3 -->
+                <a href="https://www.vet.una.py/?page_id=2316" target="_blank"
+                  class="block bg-white p-6 sm:p-8 rounded-xl shadow-lg text-center hover:shadow-xl transition">
+                  <img src="https://th.bing.com/th/id/R.3efc5689337af2db6c686f5c3e98a149?rik=bR2Ayut0W%2f9uMA&riu=http%3a%2f%2flaboratoriogerometta.com%2fwp-content%2fuploads%2f2020%2f10%2fanalisis-vet-post.jpg&ehk=q9C0qUyuVtA%2b7PSU7G3BBeHLJDoiF%2f1ZQ6Nq9aduttI%3d&risl=&pid=ImgRaw&r=0" alt="Foto ejemplo">
+                    <h3 class="text-lg font-bold text-primary mb-2">
+                        Laboratorios de la Facultad de Ciencias Veterinarias – UNA
+                    </h3>
+                    <p class="text-gray-600 text-sm sm:text-base">
+                        Información sobre laboratorios y servicios veterinarios de la Universidad Nacional de Asunción.
+                    </p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 sm:px-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Información de la Empresa -->
+                <div class="mb-8 sm:mb-0">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                            <i class="fas fa-paw text-white text-sm"></i>
+                        </div>
+                        <span class="text-xl font-bold">Find My Pet</span>
+                    </div>
+                    <p class="text-gray-400 mb-4 text-sm sm:text-base">
+                        Reuniendo mascotas con sus familias desde 2025. Nuestra misión es ayudar a que ninguna mascota permanezca perdida.
+                    </p>
+                </div>
+                
+                <!-- Enlaces Rápidos -->
+                <div class="mb-8 sm:mb-0">
+                    <h4 class="text-lg font-semibold mb-4">Navegación</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm sm:text-base">
+                        <li><a href="{{ url_for('index') }}" class="hover:text-white transition-colors">Inicio</a></li>
+                        <li><a href="{{ url_for('mostrar_reporte') }}" class="hover:text-white transition-colors">Formulario de reportes</a></li>
+                        <li><a href="{{ url_for('sobre_nosotros') }}" class="hover:text-white transition-colors">Sobre nosotros</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Soporte -->
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Ayuda y Soporte</h4>
+                    <ul class="space-y-2 text-gray-400 text-sm sm:text-base">
+                        <li><a href="{{ url_for('preguntas_frecuentes') }}" class="hover:text-white transition-colors">Preguntas Frecuentes</a></li>
+                        <li><a href="mailto:ayuda@findmypet.cl" class="hover:text-white transition-colors">findmypet_py@gmail.com</a></li>
+                        <li><a href="{{ url_for('terminos_de_uso') }}" class="hover:text-white transition-colors">Términos de Uso</a></li>
+                        <li><a href="{{ url_for('politica_privacidad') }}" class="hover:text-white transition-colors">Política de Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400 text-sm sm:text-base">
+                <p>&copy; 2025 Find My Pet. Todos los derechos reservados. Hecho con ❤️ para reunir mascotas con sus familias.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
